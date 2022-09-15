@@ -1,0 +1,185 @@
+
+{% include "admin/admin_common_header.html" %}
+
+<title>{% block title %}新建網站角色-管理員管理{% endblock %}</title>
+{% block header %}{% endblock %}
+<meta name="keywords" content="">
+<meta name="description" content="">
+
+</head>
+<body>
+{% block main_content %}
+
+<article class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-admin-role-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名稱:</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="roleName" name="roleName">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>備註:</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="description" name="description">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">網站角色:</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<dl class="permission-list">
+					<dt>
+						<label>
+							<input type="checkbox" value="7" name="user-Character-0" id="user-Character-0">
+							系統管理</label>
+					</dt>
+					<dd>
+						<dl class="cl permission-list2">
+							<dd>
+								<label class="">
+									<input type="checkbox" value="8" name="user-Character-1-0-0" id="user-Character-1-0-0">
+									登錄日誌</label>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+				<dl class="permission-list">
+					<dt>
+						<label>
+							<input type="checkbox" value="1" name="user-Character-0" id="user-Character-1">
+							內容管理</label>
+					</dt>
+					<dd>
+						<dl class="cl permission-list2">
+							
+							<dd>
+								<label class="">
+									<input type="checkbox" value="6" name="user-Character-1-0-0" id="user-Character-1-0-0">
+									添加文章</label>
+								<label class="">
+									<input type="checkbox" value="5" name="user-Character-1-0-0" id="user-Character-1-0-1">
+									欄目保存</label>
+								<label class="">
+									<input type="checkbox" value="4" name="user-Character-1-0-0" id="user-Character-1-0-2">
+									欄目編輯</label>
+								<label class="">
+									<input type="checkbox" value="3" name="user-Character-1-0-0" id="user-Character-1-0-3">
+									欄目列表</label>
+								<label class="">
+									<input type="checkbox" value="2" name="user-Character-1-0-0" id="user-Character-1-0-4">
+									添加欄目</label>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="submit" class="btn btn-success radius" 
+				id="admin-role-save" name="admin-role-save" onclick="ajax_post()">
+				<i class="icon-ok"></i>確定</button>
+			</div>
+		</div>
+	</form>
+</article>
+{% endblock %}
+
+{% include "admin/admin_common_footer.html" %}
+{% block footer_css_js %}
+
+<script src="{{ url_for('static',filename='lib/jquery.validation/1.14.0/jquery.validate.js') }}"></script>
+<script src="{{ url_for('static',filename='lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
+<script src="{{ url_for('static',filename='lib/jquery.validation/1.14.0/messages_zh.js') }}"></script>
+
+<script type="text/javascript">
+$(function(){
+	$(".permission-list dt input:checkbox").click(function(){
+		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+	});
+	$(".permission-list2 dd input:checkbox").click(function(){
+		var l =$(this).parent().parent().find("input:checked").length;
+		var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+		if($(this).prop("checked")){
+			$(this).closest("dl").find("dt input:checkbox").prop("checked",true);
+			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+		}
+		else{
+			if(l==0){
+				$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+			}
+			if(l2==0){
+				$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+			}
+		}
+	});
+	
+	$("#form-admin-role-add").validate({
+		rules:{
+			roleName:{
+				required:true,
+			},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit();
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+		}
+	});
+});
+
+
+
+// p.299
+function ajax_post(){
+    let params="";
+    let name=$("#roleName").val();
+	console.log(name);
+    let description=$("#description").val();
+	console.log(description);
+
+    $("input[name=user-Character-1-0-0]:checked").each(function(index,element){
+        if (index == 0){
+            params += ""+$(this).val();
+        }else{
+            params += ","+$(this).val();
+        }
+    });
+
+    $("input[name=user-Character-0]:checked").each(function(index,element){
+        params += ","+$(this).val();        
+    });
+
+
+	console.log(params);
+
+    $.ajax({
+        type:'POST',
+        url:"{{ url_for('admin.admin_add_role')}}",
+        data:{
+            name:name,
+            auths:params,
+            description:description
+        },
+        success:function(data){
+                layer.msg('已提交成功',{icon:1, time:2000});
+                let index=parent.layer.getFrameIndex(window.name);
+                setTimeout("parent.layer.closeAll()", 2000);
+            
+        },
+		error:function(data){
+			layer.msg("表單驗證失敗", {icon:1, time:2000});
+		}
+    });
+
+
+}
+
+
+</script>
+{% endblock %}
+</body>
+</html>

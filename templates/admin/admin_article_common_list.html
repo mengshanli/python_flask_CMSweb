@@ -1,0 +1,153 @@
+
+
+
+
+    {% extends 'admin/admin_base.html' %}
+    {% block title %}評論列表{% endblock %}
+    {% block header %}{% endblock %}
+    {% block main_content %}
+    
+    <div class="page-container">
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg table-hover 
+            table-sort table-responsive">
+                <thead>
+                    <tr class="text-c">
+                        <th width="25"><input type="checkbox" name="" value=""></th>
+                        <th width="80">ID</th>
+                        <th>評論</th>
+                        <th width="80">文章</th>
+                        <th width="80">評論人</th>
+                        <th width="120">評論時間</th>
+                        <th width="75">IP</th>
+                        <th width="60">狀態</th>
+                        <th width="120">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if datas.dic_list %}
+                        {{ datas.dic_list | safe }}
+                    {% endif %}
+                </tbody>
+            </table>
+    
+            <div class="dataTables_wrapper">
+                <div class="dataTables_info" id="DataTables_Table_0_info" role="status"
+                aria-live="polite">共 {{datas.total}} 頁</div>
+                <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_piginate">
+                    {% if datas.show_shouye_status == 1 %}
+                    <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
+                    data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous"
+                    href="/admin/comment_list/?p=1">首頁</a>
+                    <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
+                    data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous"
+                    href="/admin/comment_list/?p={{datas.p-1}}">上一頁</a>
+                    {% endif %}
+                    <span>
+                        <a class="paginate_button current" aria-controls="DataTables_Table_0"
+                        data-dt-idx="1" tabindex="0">
+                        {{ datas.p }}
+                        </a>
+                    </span>
+                    {% if datas.p < datas.total %}
+                        {% if datas.is_end_page == 0 %}
+                        <a class="paginate_button next disabled" aria-controls="DataTables_Table_0"
+                        data-dt-idx="2" tabindex="0" id="DataTables_Table_0_next"
+                        href="/admin/comment_list/?p={{datas.p+1}}">下一頁</a>
+                        {% endif %}
+                        <a class="paginate_button next disabled" aria-controls="DataTables_Table_0"
+                        data-dt-idx="2" tabindex="0" id="DataTables_Table_0_next"
+                        href="/admin/comment_list/?p={{datas.total}}">尾頁</a>    
+                    {% endif %}
+                </div>
+            </div>
+    
+    
+        </div>
+    </div>
+    {% endblock %}
+
+    
+    {% block footer_css_js %}
+
+    <script src="{{ url_for('static', filename='lib/My97DatePicker/4.8/WdatePicker.js')}}"></script>
+    <script src="{{ url_for('static', filename='lib/laypage/1.2/laypage.js')}}"></script>
+    
+
+    
+    <script type="text/javascript">
+        function comment_del(obj, id){
+            
+            layer.confirm("確定要刪除嗎?", function(index){
+                $.ajax({
+                    type:'POST',
+                    url:"{{ url_for('admin.comment_del')}}",
+                    data:{aid:id},
+                    success:function(data){
+                        layer.msg('已刪除', {icon:1, time:1000});
+                        window.location.href=window.location.href;
+                    },
+                    error:function(data){
+                        console.log(data.msg);
+                        alert(失敗);
+                        alert(data);
+                    }
+                });
+            });
+        };
+    
+    
+        function comment_stop(obj, id){
+            layer.confirm("確定要下架嗎?", function(index){
+                console.log('yes');
+                $.ajax({
+                    type:'POST',
+                    url:"{{ url_for('admin.comment_stop')}}",
+                    data:{aid:id},
+                    success:function(data){
+                        if (data == ''){
+                            layer.msg('修改失敗', {icon:5, time:1000});
+                        }else{
+                            layer.msg('已下架', {icon:5, time:1000});
+                            window.location.href=window.location.href;
+                        }
+                    },
+                    error:function(data){
+                        console.log(data.msg);
+                        alert(data);
+                    }
+                });
+            });
+        };
+    
+        function comment_start(obj, id){
+            layer.confirm("確定要發佈嗎?", function(index){
+                $.ajax({
+                    type:'POST',
+                    url:"{{ url_for('admin.comment_start')}}",
+                    data:{aid:id},
+                    success:function(data){
+                        if (data == ''){
+                            alert("數據為空")
+                        }else{
+                            layer.msg('已審核發佈', {icon:5, time:1000});
+                            window.location.href=window.location.href;
+                        }
+                    },
+                    error:function(data){
+                        console.log(data.msg);
+                        alert(data);
+                    }
+                });
+            });
+        };
+    
+    </script>
+    {% endblock %}
+
+
+
+
+
+
+

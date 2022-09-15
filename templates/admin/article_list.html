@@ -1,0 +1,217 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<!-- <link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" /> -->
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui/css/H-ui.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui.admin/css/H-ui.admin.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='lib/Hui-iconfont/1.0.8/iconfont.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui.admin/skin/default/skin.css')}}" id="skin">
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui.admin/css/style.css')}}">
+
+<script type="text/javascript" src="{{url_for('static', filename='lib/jquery/1.9.1/jquery.min.js')}}"></script>
+
+
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>資訊列表</title>
+</head>
+<body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#do_search").click(function(){
+			let key=$("#searchString").val();
+			location.herf="{{ url_for('admin.search_list')}}?p=1&key="+key;
+		});
+	});
+
+</script>
+
+
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首頁 
+<span class="c-gray en">&gt;</span> 資訊管理 <span class="c-gray en">
+	&gt;</span> 資訊列表 <a class="btn btn-success radius r" 
+	style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" 
+	title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+
+	<div class="text-c">
+		<button onclick="removeIframe()" class="btn btn-primary radius">關閉選項卡</button>
+		<input type="text" name="searchString" id="searchString" placeholder="資訊名稱"
+		style="width:550px" class="input-text">
+		<button name="do_search" id="do_search" class="btn btn-success" type="submit">
+			<i class="Hui-iconfont">&#xe665;</i>搜尋資訊
+		</button>
+	</div>
+
+
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="" id="delAll"
+		class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 
+		批量刪除</a> <a href="{{ url_for('admin.article_add') }}" 
+		onclick="Hui_admin_tab(this)" data-title="添加資訊" data-href="{{ url_for('admin.article_add') }}"
+		class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加資訊</a></span> 
+		<span class="r">共有數據:<strong>{{ total }}</strong> 條</span> 
+	</div>
+
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+				<tr class="text-c">
+					<th width="25"><input type="checkbox" name="" value=""></th>
+					<th width="80">ID</th>
+					<th>標題</th>
+					<th width="80">分類</th>
+					<th width="80">來源</th>
+					<th width="120">更新時間</th>
+					<th width="75">瀏覽次數</th>
+					<th width="60">發布狀態</th>
+					<th width="120">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if rows %}
+					{% for row in rows %}
+				<tr class="text-c">
+					<td><input type="checkbox" value="{{ row.aid}}" name="smallBox" id="smallBox"></td>
+					<td>{{ row.aid }}</td>
+					<td class="text-1"><u style="cursor:pointer" class="text-primary"
+						onClick="article_edit('查看','article-zhang.html','{{ row.aid}}')"
+						title="查看">{{ row.title }}</u></td>
+					<td>{{ row.cat_id }}</td>
+					<td>{{ row.source }}</td>
+					<td>{{ row.create_time }}</td>
+					<td>{{ row.clicks }}</td>
+					<td class="td-status">
+						{% if row.status == 0 %}
+						<span class="label label-success radius">已發佈</span>
+						{% else %}
+						<span class="label label-defaunt radius">已下架</span>
+						{% endif %}
+					</td>
+					<td class="f-14 td-manage">
+						{% if row.status == 0 %}
+						<a style="text-decoration:none" onClick="article_stop(this, '{{ row.aid }}')" 
+						href="javascript:;" title="發佈"><i class="Hui-iconfont">&#xe603;</i></a>
+						{% endif %}86 
+						<a style="text-decoration:none" class="ml-5" href="../admin/article_edit/{{ row.aid }}"
+						title="編輯"><i class="Hui-iconfont">&#xe6df;</i></a>
+						<a style="text-decoration:none"class="ml-5" onClick="article_del(this, '{{row.aid}}')" 
+						href="javascript:;"title="刪除"><i class="Hui-iconfont">&#xe6e2;</i></a>
+						<!-- <a href="" id="delAll" class="btn btn-danger radius"><i class="Hui-iconfont">
+							&#xe6e2;</i>批量刪除</a> -->
+					</td>
+
+				</tr>
+					{% endfor %}
+				{% endif %}
+			</tbody>
+
+		
+		</table>
+	</div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="{{url_for('static', filename='lib/jquery/1.9.1/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='lib/layer/2.4/layer.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui/js/H-ui.min.js')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='static/h-ui.admin/js/H-ui.admin.js')}}">
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="{{ url_for('static',filename='lib/My97DatePicker/4.8/WdatePicker.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='lib/jquery.validation/1.14.0/jquery.validate.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='lib/jquery.validation/1.14.0/validate-methods.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='lib/webuploader/0.1.5/webuploader.min.js') }}"></script>
+
+<!-- 作者 -->
+<script src="{{ url_for('static',filename='lib/datatables/1.10.15/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static',filename='lib/laypage/1.2/laypage.js') }}"></script>
+
+
+
+<script type="text/javascript">
+	
+	function article_del(obj,id){
+		layer.confirm('確認要刪除嗎?', function(index){
+			$.ajax({
+				type:'POST',
+				url:"..{{url_for('admin.article_del')}}",
+				data:{aid:id},
+				success:function(data){
+					layer.msg('已刪除', {icon:1, time:1000});
+					window.location.href=window.location.href;
+				},
+				error:function(data){
+					console.log(data.msg);
+					alert(失敗);
+					alert(data);
+				}
+			});
+		});
+	}
+</script>
+
+
+<script type="text/javascript"> 
+	$("#delAll").click(function(){
+		if ($("input[name=smallBox]:checked").length == 0){
+			alert("必須選擇一項");
+		}
+		else{
+			let params='';
+			$("input[name=smallBox]:checked").each(function(index,element){
+				if (index == 0){
+					params += ''+$(this).val();
+				}else{
+					params += ', '+$(this).val();
+				}
+			});
+			console.log(params);
+
+			$.ajax({
+				type:'POST',
+				url:"..{{ url_for('admin.article_all_del')}}",
+				data:{aid:params},
+				success:function(data){
+					console.log('yes');
+
+					$("input[name=smallBox]:checked").each(function(){
+						$(this).parents('tr').remove();
+					});
+					window.location.href=window.location.href;
+					layer.msg('已刪除', {icon:1, time:1000});
+				},
+				error:function(data){
+					console.log('ho');
+					console.log(data.msg);
+					alert('失敗');
+					alert(data);
+				}
+			});
+		}
+	})
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

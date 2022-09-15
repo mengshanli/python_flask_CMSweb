@@ -1,0 +1,133 @@
+
+{% include "admin/admin_common_header.html" %}
+
+<title>{% block title %}添加權限-管理員管理{% endblock %}</title>
+{% block header %}{% endblock %}
+<meta name="keywords" content="">
+<meta name="description" content="">
+
+<!-- 自製 -->
+<style>
+    .row.cl {
+        margin:10px 0px;
+    }
+</style>
+
+</head>
+
+<body>
+    {% block head %}{% endblock %}
+    <h1>{% block page_title %}{% endblock %}</h1>
+    {% block main_content %}
+    <article class="page-container">
+        <div class="form-horizontal" id="form-admin-add">
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">
+                    <span class="c-red">
+                        上級分類:
+                    </span>
+                </label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <select name="parent_id" id="parent_id"
+                    class="selectpicker show-tick form-control">
+                        <option value="0">無</option>
+                        
+                        {% if message %}
+                        {{ message | safe }}
+                        {% endif %} 
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">
+                    <span class="c-red">
+                        權限名稱:
+                    </span>
+                </label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value=""
+                    placeholder="" id="name" name="name"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">
+                    <span class="c-red">
+                        權限URL:
+                    </span>
+                </label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <input type="text" class="input-text" value="" autocomplete="off"
+                    placeholder="權限地址" id="url" name="url"/>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-xs-4 col-sm-3">
+                    <span class="c-red">
+                        是否顯示:
+                    </span>
+                </label>
+                <div class="formControls col-xs-8 col-sm-9">
+                    <select name="status" id="status"
+                    class="selectpicker show-tick form-control">
+                        <option value="0">是</option>
+                        <option value="-1">否</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row cl">
+                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                    <button id="submit" name="submit" class="btn btn-primary radius"
+                    onclick="danji()" type="submit">提交</button>
+                </div>
+            </div>
+        </div>
+    </article>
+    {% endblock %}
+    {% include "admin/admin_common_footer.html" %}
+    
+    {% block footer_css_js %}
+    <script type="text/javascript" src="{{url_for('static', filename='lib/jquery/1.9.1/jquery.min.js')}}"></script>
+
+    <script type="text/javascript">
+        function danji(){
+            let name=$("#name").val();
+            let url=$("#url").val();
+            let parent_id=$("#parent_id").val();
+            let status=$("#status").val();
+           
+            $.ajax({
+                type:'POST',
+                url:"{{ url_for('admin.admin_add_permission')}}",
+                data:{
+                    name:name,
+                    url:url,
+                    parent_id:parent_id,
+                    status:status
+                },
+                success:function(data){
+                    if (data.status == 200){
+                        layer.msg('已添加成功', {icon:1, time:2000});
+                        let index=parent.layer.getFrameIndex(window.name);
+                        setTimeout("parent.layer.closeAll()", 2000);
+
+                    }
+                },
+                error:function(data){
+                    console.log(data.msg);
+                }
+            });
+        }
+
+    </script>
+    
+    
+    
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<script>
+    $(function(){
+        let checkok1=false;
+        let checkok2=false;
+        let checkok3=false;
+
+        $("input[name='oldpwd']").blur(function(){
+            let pwd=$("input[name='oldpwd']").val();
+            let dd={'oldpwd':pwd};
+            $.ajax({
+                type:'GET',
+                url:"{{url_for('admin.checkpwd')}}",
+                dataType:"json",
+                data:dd,
+                success:function(json){
+                    if (json.status == 11){
+                        $("#oldpwd").next().text('密碼正確').removeClass
+                        ('state1').addClass('state3');
+                        checkok1=1;
+                    }else{
+                        $("#oldpwd").next().text("密碼錯誤").removeClass
+                        ('state1').addClass('state4');
+                    }
+                },
+            });
+        })
+
+
+
+        $("input[name='newpwd1']").focus(function(){
+            $("#newpwd1").next().text('密碼應為6-15位之間').
+            removeClass('state1').addClass('state2');
+        }).blur(function(){
+            if ($("#newpwd1").val().length >= 6 && $(this).val().length <= 15 
+            && $(this).val() != ''){
+                $("#newpwd1").next().text('輸入有效').removeClass
+                ('state1').addClass('state4');
+                checkok2=true;
+            }else{
+                $("#newpwd1").next().text('密碼應為6-15位之間').
+                removeClass('state1').addClass('state3');
+            }
+        });
+
+
+
+        $("input[name='newpwd2']").focus(function(){
+            $(this).next().text('兩次輸入密碼須相同').
+            removeClass('state1').addClass('state2');
+        }).blur(function(){
+            if ($(this).val().length >= 6 && $(this).val().length <= 15
+            && $(this).val().length != '' && $(this).val() 
+            == $("input[name='newpwd2']").val()){
+                $(this).next().text('輸入成功').removeClass
+                ('state1').addClass('state4');
+                checkok3=true;
+            }else{
+                $(this).next().text('您兩次輸入的密碼不相同').
+                removeClass('state1').addClass('state3');
+            }
+        });
+
+
+
+
+        $('#button_1').click(function(){
+            if(checkok1 && checkok2 && checkok3){
+                $('form').submit();
+            }else{
+                return false;
+            }
+        });
+
+    })
+
+</script>
+
+
+
+
+<div class="container">
+    <div class="form_div">
+        <form action="{{ url_for('admin.editpwd') }}" class="form-signin" role="form" method="post">
+            <h2 class="form-signin-heading">修改密碼</h2>
+            <input type="password" class="form-control" placeholder="請輸入舊密碼"
+            required autofocus name="oldpwd" id="oldpwd">
+                <span class="state1">請輸入舊密碼</span>
+                    <div style="height:10px;clear:both;display:block"></div>
+                <input type="password" class="form-control" placeholder="請輸入新密碼"
+                required name="newpwd1" id="newpwd1">
+                <span class="state1">請輸入新密碼</span>
+                    <div style="height:10px;clear:both;display:block"></div>
+                <input type="password" class="form-control" placeholder="請再次輸入新密碼"
+                required name="newpwd2" id="newpwd2">
+                <span class="state1">請再次輸入新密碼</span>
+                    <div style="height:10px;clear:both;display:block"></div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" id="button_1">提交修改</button>
+                </div>
+                <div style="height:10px;clear:both;display:block"></div>
+        </form>
+        {% if message %}
+        <p style="color:red">{{ message }}</p>
+        {% endif %}
+    </div> 
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html">
+    <title>用戶登錄</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='static/h-ui.admin/css/public.css')}}">
+    <script type="text/javascript" src="{{url_for('static', filename='static/h-ui.admin/js/qikoo.js')}}"></script>
+    
+    <script type="text/javascript" src="{{url_for('static', filename='lib/jquery/1.9.1/jquery.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>   
+    <script type="text/javascript" src="{{url_for('static', filename='lib/layer/2.4/layer.js')}}"></script>
+
+    <!-- <div style="height:10px;clear:both;display:block"></div> 刪掉?-->
+
+    <!-- 不知作用於何處
+        <style type="text/css">
+        .form_div{
+            width:100%;
+            margin-left:0px;
+            padding:10px 20px;
+        }
+    </style> -->
+
+</head>
+<body>
+    <script language="JavaScript">
+        function rec(){
+            if (confirm("確定刪除此紀錄?")){
+                a.setAttribute("onclick", '');
+                return true;
+            }
+            return false;
+        }
+    </script>
+
+    <div class="container">
+        <div class="mainBox" style="height:auto!important;height:550px;min-height:550px;">
+            <h3><a href="{{ url_for('admin.article_cat_add') }}" class="actionBtn add"
+                style="padding-left:20px;"> 添加分類</a>文章分類</h3>
+            <table width="100%" border="0" cellpadding="8" cellspacing="0" 
+                class="tableBasic">
+                <tr>
+                    <th width="120" align="left">分類名稱</th>
+                    <th align="left">別名</th>
+                    <th align="left">簡單描述</th>
+                    <th width="60" align="center">排序</th>
+                    <th width="80" align="center">操作</th>
+                </tr>
+                {% if message %}
+                {{ message | safe }}
+                {% endif %}
+
+                <!-- p.233 跟views.py中的def creat_cat_list()很像，先忽略 -->
+                <!-- <tr>
+                    <td align="left">{title}</td>
+                    <td>{dir}</td>
+                    <td>{description}</td>
+                    <td align="center">{cat_sort}</td>
+                    <td align="center"><a href="../article_cat_edit/{cat_id}">編輯
+                        </a>|<a href="../article_cat_del/{cat_id}" onclick="rec();
+                        return false">刪除</a></td>
+                </tr> -->
+
+
+        
+            </table>
+        
+        </div>
+    </div>
+
+
+</body>
+</html>

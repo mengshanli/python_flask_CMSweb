@@ -1,0 +1,155 @@
+
+{% include "admin/admin_common_header.html" %}
+<title>{% block title %}權限管理{% endblock %}</title>
+{% block header %}{% endblock %}
+<meta name="keywords" content="">
+<meta name="description" content="">
+</head>
+<body>
+    {% block head %}
+    {% endblock %}
+    <h1>{% block page_title %}{% endblock %}</h1>
+    
+    {% block main_content %}	
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首頁 <span class="c-gray en">&gt;</span> 
+        管理員管理 <span class="c-gray en">&gt;</span> 權限管理 <a class="btn btn-success radius r" 
+        style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" 
+        title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+        <div class="text-c">
+            <div class="Huiform">
+                <input type="text" class="input-text" style="width:250px" placeholder="權限名稱" id="search_key" 
+                name="search_key">
+                <button type="submit" class="btn btn-success" id="do_search" name="do_search">
+                    <i class="Hui-iconfont">&#xe665;</i> 搜權限節點</button>
+            </div>
+        </div>
+        <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" 
+            class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量刪除</a> 
+            <a href="javascript:;" onclick="admin_permission_add('添加權限節點',
+            '{{url_for('admin.admin_add_permission')}}','','310')" class="btn btn-primary radius">
+            <i class="Hui-iconfont">&#xe600;</i> 添加權限節點</a>
+            </span> <span class="r">共有數據:<strong>{{ paginate.total }}</strong> 條</span> </div>
+        <table class="table table-border table-bordered table-bg">
+            <thead>
+                <tr>
+                    <th scope="col" colspan="7">權限節點</th>
+                </tr>
+                <tr class="text-c">
+                    <th width="25"><input type="checkbox" name="" value=""></th>
+                    <th width="40">ID</th>
+                    <th width="200">權限名稱</th>
+                    <th>地址</th>
+                    <th width="100">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in arts %}
+                <tr class="text-c">
+                    <td><input type="checkbox" value="{{ v.id }}" name="smallBox" id="smallBox"></td>
+                    <td>{{ v.id }}</td>
+                    <td>{{ v.name }}</td>
+                    <td>{{ v.url }}</td>
+                    <td><a type="button" title="編輯" href="javascript:;" 
+                        onclick="admin_permission_edit('角色編輯','{{url_for('admin.admin_edit_permission')}}'
+                        ,'{{ v.id }}','','310')" class="ml-5" style="text-decoration:none">
+                        <i class="Hui-iconfont">&#xe6df;</i></a> 
+                        <a title="刪除" href="javascript:;" onclick="admin_permission_del(this,'{{ v.id }}')" 
+                        class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="dataTables_wrapper">
+            <div class="dataTables_info" id="DataTables_Table_0_info" role="status"
+            aria-live="polite">共 {{ paginate.pages }} 頁</div>
+            <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_piginate">
+                <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous"
+                href="{{ url_for('admin.admin_permission') }}?page=1">首頁</a>
+                {% if paginate.has_prev %}
+                <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous"
+                href="{{ url_for('admin.admin_permission')}}?page={{ paginate.prev_num }}">上一頁</a>
+                {% else %}
+                <a class="paginate_button previous disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="0" tabindex="0" id="DataTables_Table_0_previous"
+                href="#">上一頁</a>
+                {% endif %}
+                <span>
+                    <a class="paginate_button current" aria-controls="DataTables_Table_0"
+                    data-dt-idx="1" tabindex="0">
+                    {{ paginate.page }}
+                    </a>
+                </span>
+                {% if paginate.has_next %}
+                <a class="paginate_button next disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="2" tabindex="0" id="DataTables_Table_0_next"
+                href="{{ url_for('admin.admin_permission')}}?page={{ paginate.next_num}}">下一頁</a>
+                {% else %}
+                <a class="paginate_button next disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="2" tabindex="0" id="DataTables_Table_0_next"
+                href="#">下一頁</a>
+                {% endif %}
+                <a class="paginate_button next disabled" aria-controls="DataTables_Table_0"
+                data-dt-idx="2" tabindex="0" id="DataTables_Table_0_next"
+                href="{{ url_for('admin.admin_permission') }}?page={{ paginate.pages }}">尾頁</a>    
+            </div>
+        </div>
+
+    </div>
+    {% endblock %}
+    
+    {% include "admin/admin_common_footer.html" %}
+
+    {% block footer_css_js %}
+
+    <script src="{{ url_for('static', filename='lib/My97DatePicker/4.8/WdatePicker.js')}}"></script>
+    <script src="{{ url_for('static', filename='lib/laypage/1.2/laypage.js')}}"></script>
+    
+    <script type="text/javascript">
+
+        /*管理员-权限-编辑*/
+        function admin_permission_edit(title,url,id,w,h){
+            $.ajax({
+                    type: 'GET',
+                    url: "{{ url_for('admin.admin_edit_permission') }}",
+                    data :   {id :id},	
+                    success: function(data){
+                    
+                    },
+                    error:function(data) {
+                        
+                    },
+                });
+                /*window.location.href = "{{ url_for('admin.admin_edit_permission') }}" + "?id="+ id; */
+            layer_show(title,url,w,h);
+        }
+
+
+
+        function admin_permission_del(obj,id){
+            console.log(id);
+            layer.confirm("確定要刪除嗎?", function(index){
+                $.ajax({
+                    type:'POST',
+                    url:"{{ url_for('admin.admin_del_permission')}}",
+                    dataType:'json',
+                    data:{id:id},
+                    success:function(data){
+                        $(obj).parents("tr").remove();
+                        layer.msg("已刪除", {icon:1, time:1000});
+                    },
+                    error:function(data){
+                        console.log(data.msg);                    
+                    }
+                });
+            });
+        };
+
+    </script>
+{% endblock %}
+
+</body>
+</html>

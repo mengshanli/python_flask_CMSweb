@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="{{url_for('static', filename='lib/jquery/1.9.1/jquery.min.js')}}"></script>
+
+<style>
+    .form_div{
+        width:400px;
+        padding:30px 20px;
+    }
+    .state1{
+        color:#aaa;
+    }
+    .state2{
+        color:#000;
+    }
+    .state3{
+        color:red;
+    }
+    .state4{
+        color:green;
+    }
+</style>
+{% endblock %}
+
+{% block title %}佳奇CMS系統-修改密碼{% endblock %}
+{% block body %}
+{% include 'admin/edit_pwd_details.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'admin/footer.html' %}
+{% endblock %}
+
+
+
+
+
+
+
+
+
